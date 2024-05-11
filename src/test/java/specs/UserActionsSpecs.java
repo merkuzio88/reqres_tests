@@ -14,16 +14,12 @@ public class UserActionsSpecs {
     public static RequestSpecification userGetRequestSpec = with()
             .filter(withCustomTemplates())
             .log().all()
-            .contentType(JSON)
-            .baseUri("https://reqres.in")
-            .basePath("/api/users");
+            .contentType(JSON);
 
     public static RequestSpecification userUpdateRequestSpec = with()
             .filter(withCustomTemplates())
             .log().all()
-            .contentType(JSON)
-            .baseUri("https://reqres.in")
-            .basePath("/api/users/2");
+            .contentType(JSON);
 
     public static ResponseSpecification userGetResponseSpec = new ResponseSpecBuilder()
             .expectStatusCode(201)

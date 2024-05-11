@@ -3,18 +3,16 @@ package tests;
 import models.UserRequestBody;
 import models.UserGetResponseBody;
 import models.UserUpdateResponseBody;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.*;
 import static specs.UserActionsSpecs.*;
 
-@Tag("reqres_tests")
 @DisplayName("reqres.in tests")
-public class ReqresTests {
+public class ReqresTests extends TestBase {
 
     @DisplayName("Checking the successful creation of a new user")
     @Test
@@ -26,14 +24,14 @@ public class ReqresTests {
         UserGetResponseBody response = step("Make request", ()->
         given(userGetRequestSpec)
                 .body(userBody)
-                .post()
+                .post("/users")
                 .then()
                 .spec(userGetResponseSpec)
                 .extract().as(UserGetResponseBody.class));
 
         step("Check response", () -> {
-            Assertions.assertEquals(userBody.getJob(), response.getJob());
-            Assertions.assertEquals(userBody.getName(), response.getName());
+            assertThat(userBody.getJob()).isEqualTo(response.getJob());
+            assertThat(userBody.getName()).isEqualTo(response.getName());
         });
     }
 
@@ -43,7 +41,7 @@ public class ReqresTests {
         step("Make unsuccessful request", ()->
         given(userGetRequestSpec)
                 .body(".")
-                .post()
+                .post("/users")
                 .then()
                 .spec(error400ResponseSpec));
     }
@@ -58,14 +56,14 @@ public class ReqresTests {
         UserUpdateResponseBody response = step("Make request", ()->
         given(userUpdateRequestSpec)
                 .body(userBody)
-                .put()
+                .put("/users/2")
                 .then()
                 .spec(userUpdateResponseSpec)
                 .extract().as(UserUpdateResponseBody.class));
 
         step("Check response", () -> {
-            Assertions.assertEquals(userBody.getJob(), response.getJob());
-            Assertions.assertEquals(userBody.getName(), response.getName());
+            assertThat(userBody.getJob()).isEqualTo(response.getJob());
+            assertThat(userBody.getName()).isEqualTo(response.getName());
         });
     }
 
@@ -75,7 +73,7 @@ public class ReqresTests {
         step("Make unsuccessful request", ()->
                 given(userUpdateRequestSpec)
                         .body(".")
-                        .put()
+                        .put("/users/2")
                         .then()
                         .spec(error400ResponseSpec));
     }
@@ -90,14 +88,14 @@ public class ReqresTests {
         UserUpdateResponseBody response = step("Make request", ()->
                 given(userUpdateRequestSpec)
                         .body(userBody)
-                        .patch()
+                        .patch("/users/2")
                         .then()
                         .spec(userUpdateResponseSpec)
                         .extract().as(UserUpdateResponseBody.class));
 
         step("Check response", () -> {
-            Assertions.assertEquals(userBody.getJob(), response.getJob());
-            Assertions.assertEquals(userBody.getName(), response.getName());
+            assertThat(userBody.getJob()).isEqualTo(response.getJob());
+            assertThat(userBody.getName()).isEqualTo(response.getName());
         });
     }
 
@@ -107,7 +105,7 @@ public class ReqresTests {
         step("Make unsuccessful request", ()->
                 given(userUpdateRequestSpec)
                         .body(".")
-                        .patch()
+                        .patch("/users/2")
                         .then()
                         .spec(error400ResponseSpec));
     }
