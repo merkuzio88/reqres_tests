@@ -1,18 +1,41 @@
 package tests;
 
-import models.UserRequestBody;
+import api.UserActionsApi;
 import models.UserGetResponseBody;
+import models.UserRequestBody;
+import models.UserCreateResponseBody;
 import models.UserUpdateResponseBody;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.qameta.allure.Allure.step;
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.*;
-import static specs.UserActionsSpecs.*;
 
 @DisplayName("reqres.in tests")
 public class ReqresTests extends TestBase {
+
+    UserActionsApi userActionsApi = new UserActionsApi();
+
+    @DisplayName("Checking the successful getting of a user")
+    @Test
+    void getUserTest() {
+        UserGetResponseBody response = step("Make request", ()->
+                userActionsApi.userGet());
+
+        SoftAssertions softAssertions = new SoftAssertions();
+        step("Check response", () -> {
+            softAssertions.assertThat("Janet").isEqualTo(response.getData().first_name);
+            softAssertions.assertThat("Weaver").isEqualTo(response.getData().last_name);
+        });
+        softAssertions.assertAll();
+    }
+
+    @DisplayName("Checking the successful deleting of a user")
+    @Test
+    void deleteUserTest() {
+        step("Make successful delete request", ()->
+                userActionsApi.userDelete());
+    }
 
     @DisplayName("Checking the successful creation of a new user")
     @Test
@@ -21,29 +44,22 @@ public class ReqresTests extends TestBase {
         userBody.setName("morpheus");
         userBody.setJob("leader");
 
-        UserGetResponseBody response = step("Make request", ()->
-        given(userGetRequestSpec)
-                .body(userBody)
-                .post("/users")
-                .then()
-                .spec(userGetResponseSpec)
-                .extract().as(UserGetResponseBody.class));
+        UserCreateResponseBody response = step("Make request", ()->
+                userActionsApi.userCreate(userBody));
 
+        SoftAssertions softAssertions = new SoftAssertions();
         step("Check response", () -> {
-            assertThat(userBody.getJob()).isEqualTo(response.getJob());
-            assertThat(userBody.getName()).isEqualTo(response.getName());
+            softAssertions.assertThat(userBody.getJob()).isEqualTo(response.getJob());
+            softAssertions.assertThat(userBody.getName()).isEqualTo(response.getName());
         });
+        softAssertions.assertAll();
     }
 
     @DisplayName("Checking the unsuccessful creation of a new user with Bad Request error")
     @Test
     void unsuccessfulCreateNewUserTest() {
-        step("Make unsuccessful request", ()->
-        given(userGetRequestSpec)
-                .body(".")
-                .post("/users")
-                .then()
-                .spec(error400ResponseSpec));
+        step("Make unsuccessful post request", ()->
+                userActionsApi.unsuccessfulUserCreate());
     }
 
     @DisplayName("Checking the successful user update with put method")
@@ -54,28 +70,21 @@ public class ReqresTests extends TestBase {
         userBody.setJob("zion resident");
 
         UserUpdateResponseBody response = step("Make request", ()->
-        given(userUpdateRequestSpec)
-                .body(userBody)
-                .put("/users/2")
-                .then()
-                .spec(userUpdateResponseSpec)
-                .extract().as(UserUpdateResponseBody.class));
+                userActionsApi.userPutUpdate(userBody));
 
+        SoftAssertions softAssertions = new SoftAssertions();
         step("Check response", () -> {
-            assertThat(userBody.getJob()).isEqualTo(response.getJob());
-            assertThat(userBody.getName()).isEqualTo(response.getName());
+            softAssertions.assertThat(userBody.getJob()).isEqualTo(response.getJob());
+            softAssertions.assertThat(userBody.getName()).isEqualTo(response.getName());
         });
+        softAssertions.assertAll();
     }
 
     @DisplayName("Checking the unsuccessful user update with put method and Bad Request error")
     @Test
     void unsuccessfulUpdateUserWithPutTest() {
-        step("Make unsuccessful request", ()->
-                given(userUpdateRequestSpec)
-                        .body(".")
-                        .put("/users/2")
-                        .then()
-                        .spec(error400ResponseSpec));
+        step("Make unsuccessful put request", ()->
+                userActionsApi.unsuccessfulUserPutUpdate());
     }
 
     @DisplayName("Checking the successful user update with patch method")
@@ -86,27 +95,20 @@ public class ReqresTests extends TestBase {
         userBody.setJob("zion resident");
 
         UserUpdateResponseBody response = step("Make request", ()->
-                given(userUpdateRequestSpec)
-                        .body(userBody)
-                        .patch("/users/2")
-                        .then()
-                        .spec(userUpdateResponseSpec)
-                        .extract().as(UserUpdateResponseBody.class));
+                userActionsApi.userPatchUpdate(userBody));
 
+        SoftAssertions softAssertions = new SoftAssertions();
         step("Check response", () -> {
-            assertThat(userBody.getJob()).isEqualTo(response.getJob());
-            assertThat(userBody.getName()).isEqualTo(response.getName());
+            softAssertions.assertThat(userBody.getJob()).isEqualTo(response.getJob());
+            softAssertions.assertThat(userBody.getName()).isEqualTo(response.getName());
         });
+        softAssertions.assertAll();
     }
 
     @DisplayName("Checking the unsuccessful user update with patch method and Bad Request error")
     @Test
     void unsuccessfulUpdateUserWithPatchTest() {
-        step("Make unsuccessful request", ()->
-                given(userUpdateRequestSpec)
-                        .body(".")
-                        .patch("/users/2")
-                        .then()
-                        .spec(error400ResponseSpec));
+        step("Make unsuccessful patch request", ()->
+                userActionsApi.unsuccessfulUserPatchUpdate());
     }
 }
