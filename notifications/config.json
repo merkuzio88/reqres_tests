@@ -1,0 +1,17 @@
+{
+  "base": {
+    "project": "${JOB_NAME}",
+    "environment": "jenkins",
+    "comment": "${COMMENT}",
+    "reportLink": "${BUILD_URL}",
+    "language": "en",
+    "messenger": "telegram",
+    "allureFolder": "allure-report",
+    "enableChart": true
+  },
+  "telegram": {
+    "token": "6381924355:AAEyAtPMH2ft6xoyi09kfVw1AfLcRKs9ujk",
+    "chat": "-1002068193525",
+    "replyTo": ""
+  }
+}
